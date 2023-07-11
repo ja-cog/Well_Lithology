@@ -1,0 +1,41 @@
+---
+title: "Lithology_Figures"
+output: html_document
+date: "2023-07-11"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Load in packages
+
+```{r}
+library(tidyverse)
+library(here)
+library(janitor)
+library(readxl)
+library(ggplot2)
+```
+
+#Loading in data
+
+```{r}
+well_lith <- read_excel(here("data/Well Lithology.xlsx"))|>
+  clean_names()|>
+  select(name, well_name, start_depth, end_depth, condensed_lithology)
+
+# Filter data for Bixby Ranch
+bixby_ranch <- well_lith |>
+  filter(name == "Bixby Ranch")
+
+# Filter data for Jalama Ranch
+jalama_ranch <- well_lith |>
+  filter(name == "Jalama Ranch") 
+
+# Filter data for Cojo Ranch
+cojo_ranch <- well_lith |>
+  filter(name == "Cojo Ranch")
+
+```
+
