@@ -5,7 +5,7 @@ date: "2023-07-11"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 # Load in packages
@@ -108,12 +108,16 @@ df$percent <- percent_labels
 # Sort the data frame by frequency in descending order
 df <- df %>% arrange(desc(freq))
 
+# Define the color palette
+color_palette <- c("#808080", "#6699CC", "#228B22", "#ADD8E6", "#964B00", "#FF6666", "#E8E8E8", "#FFA500", "#D2691E", "#FDD9A2", "#D8BFD8")
+names(color_palette) <- c("Clay", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Soil", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone", "Shale, Sandstone")
+
 # Create the pie chart with adjusted label positions to avoid overlap
 pie_chart_jalama <- ggplot(df, aes(x = "", y = freq, fill = lithology, label = "")) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar(theta = "y", start = 0) +
   geom_text(aes(label = percent), position = position_stack(vjust = 0.5), size = 2.5) +
-  scale_fill_manual(values = rainbow(nrow(df)), name = "Lithology") +
+  scale_fill_manual(values = color_palette, name = "Lithology") +
   theme_void() +
   theme(panel.border = element_blank(),
         plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
@@ -127,8 +131,117 @@ print(pie_chart_jalama)
 
 ```
 
+
+
 ```{r}
-color_palette <- c("#808080", "#6699CC", "#228B22", "#ADD8E6", "#964B00", "#FF6666", "#E8E8E8","#FFA500", "#D2691E", "#F4A460")
-names(color_palette) <- c("Clay", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Soil", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone" )
+color_palette <- c("#808080", "#6699CC", "#228B22", "#ADD8E6", "#964B00", "#FF6666", "#E8E8E8","#FFA500", "#D2691E", "#FDD9A2", "#D8BFD8")
+names(color_palette) <- c("Clay", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Soil", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone", "Shale, Sandstone")
 ```
 
+# Bixby Ranch Lithology Pie Chart
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Count the frequency of items in condensed_lithology column
+lithology_freq <- table(bixby_ranch$condensed_lithology)
+
+# Create a data frame with lithology frequencies and percentage labels
+df <- data.frame(lithology = names(lithology_freq), freq = as.numeric(lithology_freq))
+
+# Calculate the percentage labels
+percent_labels <- paste0(round(100 * df$freq / sum(df$freq), 1), "%")
+df$percent <- percent_labels
+
+# Sort the data frame by frequency in descending order
+df <- df %>% arrange(desc(freq))
+
+# Define the color palette
+color_palette <- c("#808080", "#228B22", "#964B00", "#FDD9A2", "#6A0DAD", "#FFE135", "#00FF00", "#FF69B4")
+names(color_palette) <- c("Clay", "Shale", "Soil", "Sandstone", "Gravel", "Siltstone", "Siltstone, Sandstone", "Soil, Clay")
+
+# Create the pie chart with adjusted label positions to avoid overlap
+pie_chart_bixby <- ggplot(df, aes(x = "", y = freq, fill = lithology, label = "")) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y", start = 0) +
+  geom_text(aes(label = percent), position = position_stack(vjust = 0.5), size = 2.5) +
+  scale_fill_manual(values = color_palette, name = "Lithology") +
+  theme_void() +
+  theme(panel.border = element_blank(),
+        plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.position = "right",
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 10)) +
+  labs(title = "Frequency of Lithologies - Bixby Ranch")
+
+# Display the pie chart
+print(pie_chart_bixby)
+
+```
+```{r}
+# Bixby 
+color_palette <- c("#808080", "#228B22", "#964B00", "#FDD9A2", "#6A0DAD", "#FFE135", "#FFA500", "#FF69B4" )
+names(color_palette) <- c("Clay", "Shale", "Soil", "Sandstone", "Gravel", "Siltstone", "Siltstone, Sandstone", "Soil, Clay")
+```
+
+```{r}
+# Jalama
+color_palette <- c("#808080", "#6699CC", "#228B22", "#ADD8E6", "#964B00", "#FF6666", "#E8E8E8","#FFA500", "#D2691E", "#FDD9A2", "#D8BFD8")
+names(color_palette) <- c("Clay", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Soil", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone", "Shale, Sandstone")
+```
+
+```{r}
+# Cojo
+color_palette <- c("#808080", "#D2B48C", "#6699CC", "#228B22", "#ADD8E6", "#800000", "#964B00", "#FF00FF")
+names(color_palette) <- c("Clay", "Clay, Gravel, Sand", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Shale, Sand, Clay", "Soil", "Till")
+```
+
+```{r}
+# total
+color_palette <- c("#808080", "#D2B48C", "#6699CC", "#228B22", "#ADD8E6", "#800000", "#964B00", "#FF00FF", "#FF6666", "#E8E8E8","#FFA500", "#D2691E", "#FDD9A2", "#D8BFD8", "#6A0DAD", "#FFE135", "#00FF00", "#FF69B4" )
+names(color_palette) <- c("Clay", "Clay, Gravel, Sand", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Shale, Sand, Clay", "Soil", "Till", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone", "Shale, Sandstone", "Gravel", "Siltstone", "Siltstone, Sandstone", "Soil, Clay")
+
+```
+
+# All Ranches Lithology Pie Chart
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Count the frequency of items in condensed_lithology column
+lithology_freq <- table(well_lith$condensed_lithology)
+
+# Create a data frame with lithology frequencies and percentage labels
+df <- data.frame(lithology = names(lithology_freq), freq = as.numeric(lithology_freq))
+
+# Calculate the percentage labels
+percent_labels <- paste0(round(100 * df$freq / sum(df$freq), 1), "%")
+df$percent <- percent_labels
+
+# Sort the data frame by frequency in descending order
+df <- df %>% arrange(desc(freq))
+
+# Define the color palette
+color_palette <- c("#808080", "#D2B48C", "#6699CC", "#228B22", "#ADD8E6", "#800000", "#964B00", "#FF00FF", "#FF6666", "#E8E8E8", "#FFA500", "#D2691E", "#FDD9A2", "#D8BFD8", "#6A0DAD", "#FFE135", "#00FF00", "#FF69B4")
+names(color_palette) <- c("Clay", "Clay, Gravel, Sand", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Shale, Sand, Clay", "Soil", "Till", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone", "Shale, Sandstone", "Gravel", "Siltstone", "Siltstone, Sandstone", "Soil, Clay")
+
+# Create the pie chart with adjusted label positions to avoid overlap
+pie_chart_tot <- ggplot(df, aes(x = "", y = freq, fill = lithology, label = "")) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y", start = 0) +
+  geom_text(aes(label = percent), position = position_stack(vjust = 0.5), size = 2.5) +
+  scale_fill_manual(values = color_palette, name = "Lithology") +
+  theme_void() +
+  theme(panel.border = element_blank(),
+        plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.position = "right",
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 10)) +
+  labs(title = "Frequency of Lithologies - All Ranches")
+
+# Display the pie chart
+print(pie_chart_tot)
+
+```
