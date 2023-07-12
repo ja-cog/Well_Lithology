@@ -8,7 +8,7 @@ date: "2023-07-11"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Load in packages
+# Load in packages
 
 ```{r}
 library(tidyverse)
@@ -18,12 +18,17 @@ library(readxl)
 library(ggplot2)
 ```
 
-#Loading in data
+# Loading in data
 
 ```{r}
 well_lith <- read_excel(here("data/Well Lithology.xlsx"))|>
   clean_names()|>
-  select(name, well_name, start_depth, end_depth, condensed_lithology)
+  select(name, well_name, start_depth, end_depth, condensed_lithology)%>%
+  mutate_all(str_to_title)
+
+# Removing NA column
+well_lith <- well_lith[-11, , drop = FALSE]
+
 
 # Filter data for Bixby Ranch
 bixby_ranch <- well_lith |>
@@ -37,5 +42,93 @@ jalama_ranch <- well_lith |>
 cojo_ranch <- well_lith |>
   filter(name == "Cojo Ranch")
 
+```
+
+# Cojo Ranch Lithology Pie Chart
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Define the color palette
+color_palette <- c("#808080", "#D2B48C", "#6699CC", "#228B22", "#ADD8E6", "#800000", "#964B00", "#FF00FF")
+names(color_palette) <- c("Clay", "Clay, Gravel, Sand", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Shale, Sand, Clay", "Soil", "Till")
+
+# Count the frequency of items in condensed_lithology column
+lithology_freq <- table(cojo_ranch$condensed_lithology)
+
+# Create a data frame with lithology frequencies
+df <- data.frame(lithology = names(lithology_freq), freq = as.numeric(lithology_freq))
+
+# Sort the data frame by frequency in descending order
+df <- df %>% arrange(desc(freq))
+
+# Calculate the percentage labels based on the sorted data frame
+percent_labels <- paste0(round(100 * df$freq / sum(df$freq), 1), "%")
+
+# Add the percent_labels to the data frame
+df$percent <- percent_labels
+
+# Create the pie chart with adjusted label positions to avoid overlap
+pie_chart_cojo <- ggplot(df, aes(x = "", y = freq, fill = lithology, label = "")) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y", start = 0) +
+  geom_text(aes(label = percent), position = position_stack(vjust = 0.5), size = 3) +
+  scale_fill_manual(values = color_palette, name = "Lithology") +
+  theme_void() +
+  theme(panel.border = element_blank(),
+        plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.position = "right",
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 10)) +
+  labs(title = "Frequency of Lithologies - Cojo Ranch")
+
+# Display the pie chart
+print(pie_chart_cojo)
+
+```
+
+
+# Jalama Ranch Lithology Pie Chart 
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Count the frequency of items in condensed_lithology column
+lithology_freq <- table(jalama_ranch$condensed_lithology)
+
+# Create a data frame with lithology frequencies and percentage labels
+df <- data.frame(lithology = names(lithology_freq), freq = as.numeric(lithology_freq))
+
+# Calculate the percentage labels
+percent_labels <- paste0(round(100 * df$freq / sum(df$freq), 1), "%")
+df$percent <- percent_labels
+
+# Sort the data frame by frequency in descending order
+df <- df %>% arrange(desc(freq))
+
+# Create the pie chart with adjusted label positions to avoid overlap
+pie_chart_jalama <- ggplot(df, aes(x = "", y = freq, fill = lithology, label = "")) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y", start = 0) +
+  geom_text(aes(label = percent), position = position_stack(vjust = 0.5), size = 2.5) +
+  scale_fill_manual(values = rainbow(nrow(df)), name = "Lithology") +
+  theme_void() +
+  theme(panel.border = element_blank(),
+        plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        legend.position = "right",
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 10)) +
+  labs(title = "Frequency of Lithologies - Jalama Ranch")
+
+# Display the pie chart
+print(pie_chart_jalama)
+
+```
+
+```{r}
+color_palette <- c("#808080", "#6699CC", "#228B22", "#ADD8E6", "#964B00", "#FF6666", "#E8E8E8","#FFA500", "#D2691E", "#F4A460")
+names(color_palette) <- c("Clay", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Soil", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone" )
 ```
 
