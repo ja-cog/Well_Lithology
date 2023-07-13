@@ -152,7 +152,7 @@ oaks4 <- cojo_ranch_bar |>
 oaks5 <- cojo_ranch_bar |>
   filter(well_name == "Oaks Well #5")
 
-oaks3 <- cojo_ranch_bar |>
+oaks3b <- cojo_ranch_bar |>
   filter(well_name == "Oaks Monitoring Well #3b")
 
 ```
@@ -382,6 +382,11 @@ names(color_palette_bar) <- c("Clay", "Clay2", "Clay, Gravel, Sand", "Clay, Shal
 ```{r fig.width = 3, fig.height = 3}
 
 # Oaks 1 plot
+
+# Reorder the levels in condensed_lithology variable
+oaks1$condensed_lithology <- factor(oaks1$condensed_lithology,
+                                    levels = c("Clay, Shale", "Clay", "Shale", "Till"))
+
 ggplot(oaks1, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
   geom_bar(position = 'stack', stat = 'identity') +
   scale_fill_manual(values = color_palette_bar) +
@@ -392,6 +397,7 @@ ggplot(oaks1, aes(fill = condensed_lithology, y = segment_depth, x = well_name))
                      labels = scales::comma,limits = c(0, 250), expand = c(0, 0))
 
 # Oaks 2 plot
+
 # Reorder the levels in condensed_lithology variable
 oaks2$condensed_lithology <- factor(oaks2$condensed_lithology,
                                     levels = c("Shale2", "Clay", "Shale", "Soil"))
@@ -399,15 +405,84 @@ oaks2$condensed_lithology <- factor(oaks2$condensed_lithology,
 
 ggplot(oaks2, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
   geom_bar(position = 'stack', stat = 'identity') +
+  scale_fill_manual(values = color_palette_bar, breaks = c('Shale', 'Clay', 'Soil'),
+                    labels = c('Shale', 'Clay', 'Soil')) +
+  labs(x = "Well Name", y = "Well Depth (Ft)", fill = "Lithology") +
+  theme_classic() +
+  theme(legend.box = "horizontal", legend.box.just = "center") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8),       
+                     labels = scales::comma, limits = c(0, 400), expand = c(0, 0)) +
+  guides(fill = guide_legend())
+
+ 
+# Oaks 3 plot
+
+# Reorder the levels in condensed_lithology variable
+oaks3$condensed_lithology <- factor(oaks3$condensed_lithology,
+                                    levels = c("Shale", "Shale, Gravel, Clay"))
+
+ggplot(oaks3, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
+  geom_bar(position = 'stack', stat = 'identity') +
   scale_fill_manual(values = color_palette_bar) +
   labs(x = "Well Name", y = "Well Depth (Ft)", fill = "Lithology") +
   theme_classic() +
   theme(legend.box = "horizontal", legend.box.just = "center")+
   scale_y_continuous(breaks = scales::pretty_breaks(n = 8),       
-                     labels = scales::comma,limits = c(0, 400), expand = c(0, 0))+
-  scale_fill_discrete(breaks = "Clay","Shale","Soil")
+                     labels = scales::comma,limits = c(0, 250), expand = c(0, 0))
+
+# Oaks 4 plot
+
+# Reorder the levels in condensed_lithology variable
+oaks4$condensed_lithology <- factor(oaks4$condensed_lithology,
+                                    levels = c("Shale2", "Clay", "Shale", "Clay, Gravel, Sand", "Soil"))
 
 
+ggplot(oaks4, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
+  geom_bar(position = 'stack', stat = 'identity') +
+  scale_fill_manual(values = color_palette_bar, breaks = c('Shale', 'Clay', 'Soil', 'Clay, Gravel, Sand'),
+                    labels = c('Shale', 'Clay', 'Soil', 'Clay, Gravel, Sand')) +
+  labs(x = "Well Name", y = "Well Depth (Ft)", fill = "Lithology") +
+  theme_classic() +
+  theme(legend.box = "horizontal", legend.box.just = "center") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8),       
+                     labels = scales::comma, limits = c(0, 400), expand = c(0, 0)) +
+  guides(fill = guide_legend())
+
+# Oaks 5 plot
+
+# Reorder the levels in condensed_lithology variable
+oaks5$condensed_lithology <- factor(oaks5$condensed_lithology,
+                                    levels = c("Shale2", "Shale, Gravel, Clay", "Shale","Soil"))
+
+
+ggplot(oaks5, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
+  geom_bar(position = 'stack', stat = 'identity') +
+  scale_fill_manual(values = color_palette_bar, breaks = c('Shale', 'Clay', 'Soil', 'Shale, Gravel, Clay'),
+                    labels = c('Shale', 'Clay', 'Soil', 'Shale, Gravel, Clay')) +
+  labs(x = "Well Name", y = "Well Depth (Ft)", fill = "Lithology") +
+  theme_classic() +
+  theme(legend.box = "horizontal", legend.box.just = "center") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8),       
+                     labels = scales::comma, limits = c(0, 300), expand = c(0, 0)) +
+  guides(fill = guide_legend())
+
+
+#Oaks 3b monitoring well
+
+# Oaks 3 plot
+
+# Reorder the levels in condensed_lithology variable
+oaks3b$condensed_lithology <- factor(oaks3b$condensed_lithology,
+                                    levels = c("Shale", "Shale, Sand, Clay"))
+
+ggplot(oaks3b, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
+  geom_bar(position = 'stack', stat = 'identity') +
+  scale_fill_manual(values = color_palette_bar) +
+  labs(x = "Well Name", y = "Well Depth (Ft)", fill = "Lithology") +
+  theme_classic() +
+  theme(legend.box = "horizontal", legend.box.just = "center")+
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8),       
+                     labels = scales::comma,limits = c(0, 250), expand = c(0, 0))
 
 ```
 
