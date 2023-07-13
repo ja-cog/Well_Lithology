@@ -21,14 +21,20 @@ library(ggplot2)
 # Loading in data
 
 ```{r}
+# data for pie charts
 well_lith <- read_excel(here("data/Well Lithology.xlsx"))|>
   clean_names()|>
   select(name, well_name, start_depth, end_depth, condensed_lithology)%>%
-  mutate_all(str_to_title)
+  mutate_all(str_to_title)|>
+  mutate(start_depth = as.numeric(start_depth),
+         end_depth = as.numeric(end_depth))
+
 
 # Removing NA column
 well_lith <- well_lith[-11, , drop = FALSE]
 
+well_lith2 <- read_excel(here("data/Well Lithology.xlsx"), sheet = 2)|>
+  clean_names()
 
 # Filter data for Bixby Ranch
 bixby_ranch <- well_lith |>
@@ -42,14 +48,118 @@ jalama_ranch <- well_lith |>
 cojo_ranch <- well_lith |>
   filter(name == "Cojo Ranch")
 
+# data for bar charts
+
+well_lith_bar <- read_excel(here("data/Copy of Well Lithology.xlsx"))|>
+  clean_names()|>
+  select(name, well_name, start_depth, end_depth, segment_depth, condensed_lithology)%>%
+  mutate_all(str_to_title)|>
+  mutate(start_depth = as.numeric(start_depth),
+         end_depth = as.numeric(end_depth),
+         segment_depth = as.numeric(segment_depth))
+
+# Filter data for Bixby Ranch
+bixby_ranch_bar <- well_lith_bar |>
+  filter(name == "Bixby Ranch")
+
+# Filter data for Jalama Ranch
+jalama_ranch_bar <- well_lith_bar |>
+  filter(name == "Jalama Ranch") 
+
+# Filter data for Cojo Ranch
+cojo_ranch_bar <- well_lith_bar |>
+  filter(name == "Cojo Ranch")
+
+# Filtering individual wells for Bixby Ranch
+low_espada1 <- bixby_ranch_bar |>
+  filter(well_name == "Lower Espada Well #1")
+
+up_espada3 <- bixby_ranch_bar |>
+  filter(well_name == "Upper Espada Well #3")
+  
+wood_c4 <- bixby_ranch_bar |>
+  filter(well_name == "Wood Canyon Well #4")
+  
+quail_c <- bixby_ranch_bar |>
+  filter(well_name == "Quail Canyon Well")
+
+jalachichi1 <- bixby_ranch_bar |>
+  filter(well_name == "Jalachichi Well #1")
+
+tinta1 <- bixby_ranch_bar |>
+  filter(well_name == "Tinta #1")
+
+tinta2 <- bixby_ranch_bar |>
+  filter(well_name == "Tinta #2")
+
+east_r <- bixby_ranch_bar |>
+  filter(well_name == "Ramajal East Well")
+
+vaquero1 <- bixby_ranch_bar |>
+  filter(well_name == "Vaquero #1")
+
+
+#Removing redundant columns
+low_espada1 <- low_espada1[-c(3, 4), ]
+
+# Filtering individual wells for Jalama Ranch
+vaqueros1 <- jalama_ranch_bar |>
+  filter(well_name == "Vaqueros #1")
+
+espada <- jalama_ranch_bar |>
+  filter(well_name == "Espada Well")
+
+gaspar1 <- jalama_ranch_bar |>
+  filter(well_name == "Gaspar Well #1")
+
+gaspar2 <- jalama_ranch_bar |>
+  filter(well_name == "Gaspar Well #2")
+
+venadito1 <- jalama_ranch_bar |>
+  filter(well_name == "Venadito Well #1")
+
+venadito2 <- jalama_ranch_bar |>
+  filter(well_name == "Venadito Well #2")
+
+escondido1 <- jalama_ranch_bar |>
+  filter(well_name == "Escondido Well #1")
+
+escondido2 <- jalama_ranch_bar |>
+  filter(well_name == "Escondido Well #2")
+
+escondido3 <- jalama_ranch_bar |>
+  filter(well_name == "Escondido Well #3")
+
+escondido4 <- jalama_ranch_bar |>
+  filter(well_name == "Escondido Well #4")
+
+escondido5 <- jalama_ranch_bar |>
+  filter(well_name == "Escondido Well #5")
+
+# Filtering individual wells for Cojo Ranch
+oaks1 <- cojo_ranch_bar |>
+  filter(well_name == "Oaks Well #1")
+
+oaks2 <- cojo_ranch_bar |>
+  filter(well_name == "Oaks Well #2")
+
+oaks3 <- cojo_ranch_bar |>
+  filter(well_name == "Oaks Well #3")
+
+oaks4 <- cojo_ranch_bar |>
+  filter(well_name == "Oaks Well #4")
+
+oaks5 <- cojo_ranch_bar |>
+  filter(well_name == "Oaks Well #5")
+
+oaks3 <- cojo_ranch_bar |>
+  filter(well_name == "Oaks Monitoring Well #3b")
+
 ```
 
 # Cojo Ranch Lithology Pie Chart
 
 ```{r}
-library(ggplot2)
-library(dplyr)
-
 # Define the color palette
 color_palette <- c("#808080", "#D2B48C", "#6699CC", "#228B22", "#ADD8E6", "#800000", "#964B00", "#FF00FF")
 names(color_palette) <- c("Clay", "Clay, Gravel, Sand", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Shale, Sand, Clay", "Soil", "Till")
@@ -92,9 +202,6 @@ print(pie_chart_cojo)
 # Jalama Ranch Lithology Pie Chart 
 
 ```{r}
-library(ggplot2)
-library(dplyr)
-
 # Count the frequency of items in condensed_lithology column
 lithology_freq <- table(jalama_ranch$condensed_lithology)
 
@@ -141,9 +248,6 @@ names(color_palette) <- c("Clay", "Clay, Shale", "Shale", "Shale, Gravel, Clay",
 # Bixby Ranch Lithology Pie Chart
 
 ```{r}
-library(ggplot2)
-library(dplyr)
-
 # Count the frequency of items in condensed_lithology column
 lithology_freq <- table(bixby_ranch$condensed_lithology)
 
@@ -207,9 +311,6 @@ names(color_palette) <- c("Clay", "Clay, Gravel, Sand", "Clay, Shale", "Shale", 
 # All Ranches Lithology Pie Chart
 
 ```{r}
-library(ggplot2)
-library(dplyr)
-
 # Count the frequency of items in condensed_lithology column
 lithology_freq <- table(well_lith$condensed_lithology)
 
@@ -245,3 +346,83 @@ pie_chart_tot <- ggplot(df, aes(x = "", y = freq, fill = lithology, label = ""))
 print(pie_chart_tot)
 
 ```
+
+
+```{r}
+color_palette <- c("#808080",
+                   "#D2B48C",
+                   "#6699CC",
+                   "#228B22",
+                   "#ADD8E6",
+                   "#800000",
+                   "#964B00",
+                   "#FF00FF",
+                   "#FF6666",
+                   "#E8E8E8",
+                   "#FFA500",
+                   "#D2691E",
+                   "#FDD9A2",
+                   "#D8BFD8",
+                   "#6A0DAD",
+                   "#FFE135",
+                   "#00FF00",
+                   "#FF69B4")
+names(color_palette) <- c("Clay", "Clay, Gravel, Sand", "Clay, Shale", "Shale", "Shale, Gravel, Clay", "Shale, Sand, Clay", "Soil", "Till", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone", "Shale, Sandstone", "Gravel", "Siltstone", "Siltstone, Sandstone", "Soil, Clay")
+```
+
+
+
+```{r}
+color_palette_bar <- c("#808080","#808080", "#D2B48C", "#6699CC", "#228B22", "#228B22", "#228B22", "#228B22", "#ADD8E6", "#800000", "#964B00", "#FF00FF", "#FF6666", "#E8E8E8", "#FFA500", "#D2691E", "#FDD9A2", "#FDD9A2", "#FDD9A2", "#FDD9A2", "#D8BFD8", "#6A0DAD", "#FFE135", "#00FF00", "#FF69B4", "#FF0000")
+names(color_palette_bar) <- c("Clay", "Clay2", "Clay, Gravel, Sand", "Clay, Shale", "Shale", "Shale2", "Shale3", "Shale4", "Shale, Gravel, Clay", "Shale, Sand, Clay", "Soil", "Till", "Adobe, Shale", "Clay, Gravel", "Claystone", "Sand, Gravel", "Sandstone", "Sandstone2", "Sandstone3", "Sandstone4", "Shale, Sandstone", "Gravel", "Siltstone", "Siltstone, Sandstone", "Soil, Clay", "Na")
+
+```
+
+# Cojo Bar Graphs
+```{r fig.width = 3, fig.height = 3}
+
+# Oaks 1 plot
+ggplot(oaks1, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
+  geom_bar(position = 'stack', stat = 'identity') +
+  scale_fill_manual(values = color_palette_bar) +
+  labs(x = "Well Name", y = "Well Depth (Ft)", fill = "Lithology") +
+  theme_classic() +
+  theme(legend.box = "horizontal", legend.box.just = "center")+
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8),       
+                     labels = scales::comma,limits = c(0, 250), expand = c(0, 0))
+
+# Oaks 2 plot
+# Reorder the levels in condensed_lithology variable
+oaks2$condensed_lithology <- factor(oaks2$condensed_lithology,
+                                    levels = c("Shale2", "Clay", "Shale", "Soil"))
+
+
+ggplot(oaks2, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
+  geom_bar(position = 'stack', stat = 'identity') +
+  scale_fill_manual(values = color_palette_bar) +
+  labs(x = "Well Name", y = "Well Depth (Ft)", fill = "Lithology") +
+  theme_classic() +
+  theme(legend.box = "horizontal", legend.box.just = "center")+
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8),       
+                     labels = scales::comma,limits = c(0, 400), expand = c(0, 0))+
+  scale_fill_discrete(breaks = "Clay","Shale","Soil")
+
+
+
+```
+
+# Jalama Bar Graph
+
+```{r fig.width = 15, fig.height = 10}
+ggplot(jalama_ranch_bar, aes(fill = condensed_lithology, y = segment_depth, x = well_name)) + 
+  geom_bar(position = 'stack', stat = 'identity') +
+  scale_fill_manual(values = color_palette_bar)
+```
+
+```{r fig.width = 15, fig.height = 10}
+ggplot(bixby_ranch_bar, aes(fill=condensed_lithology, y=segment_depth, x=well_name)) + 
+  geom_bar(position='stack', stat='identity')
+```
+
+
+
